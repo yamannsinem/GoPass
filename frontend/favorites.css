@@ -1,0 +1,77 @@
+/* ============ BİLET & FAVORİLER ============ */
+.tickets-section, .fav-section {
+    padding: 40px 5%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.tickets-section h2, .fav-section h2 {
+    color: white;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.ticket-list, .fav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Kart Stili */
+.ticket-card, .fav-card {
+    background: rgba(30, 30, 45, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 25px;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.ticket-card:hover, .fav-card:hover {
+    background: rgba(40, 40, 60, 0.8);
+    transform: translateY(-3px);
+    border-color: var(--primary);
+}
+
+/* İçerik Düzeni */
+.ticket-info { color: var(--text-dim); }
+.ticket-company {
+    color: var(--primary-light);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Butonlar */
+.ticket-button, .remove-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.ticket-button {
+    background: var(--primary);
+    color: white;
+}
+.ticket-button:hover {
+    background: var(--primary-light);
+    box-shadow: 0 0 15px var(--primary);
+}
+
+.remove-btn {
+    background: rgba(255, 50, 50, 0.15);
+    color: #ff4d4d;
+}
+.remove-btn:hover {
+    background: #ff4d4d;
+    color: white;
+}

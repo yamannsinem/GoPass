@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoPass – Giriş Yap</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        <div class="auth-title">
+            <h2>Tekrar Hoş Geldin</h2>
+            <p>Hesabınıza giriş yapın</p>
+        </div>
+
+        <form id="login-form">
+            <div class="auth-input">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" id="email" placeholder="E-posta adresiniz" required>
+            </div>
+
+            <div class="auth-input">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" placeholder="Şifreniz" required>
+            </div>
+
+            <button type="submit" class="auth-btn">Giriş Yap</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Hesabınız yok mu? <a href="kayit.html">Hemen Üye Olun</a></p>
+            <a href="index.html" class="back-home">← Ana Sayfaya Dön</a>
+        </div>
+    </div>
+</div>
+
+<script src="../js/auth.js"></script>
+<script src="../js/main.js"></script>
+
+</body>
+</html>

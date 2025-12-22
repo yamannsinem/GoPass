@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoPass – Yolculuğun Başlasın</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/home.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-paper-plane"></i> GoPass
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="active">Ana Sayfa</a>
+            <a href="ticket.html">Biletlerim</a>
+            <a href="favorites.html">Favoriler</a>
+        </div>
+
+        <div class="right-panel" id="auth-box">
+            <a href="giris.html" class="btn-outline">Giriş Yap</a>
+            <a href="kayit.html" class="btn-fill">Üye Ol</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Hayalindeki Yolculuk Bu Gece Başlar.</h1>
+            <p>Otobüs • Uçak • Vapur – Hepsi tek uygulamada.</p>
+        </div>
+
+        <div class="search-box">
+            <div class="input-group">
+                <i class="fa-solid fa-location-dot"></i>
+                <input type="text" id="origin" placeholder="Nereden?">
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-map-pin"></i>
+                <input type="text" id="destination" placeholder="Nereye?">
+            </div>
+
+            <div class="input-group">
+                <i class="fa-regular fa-calendar"></i>
+                <input type="date" id="date">
+            </div>
+
+            <button id="searchBtn" class="btn-search">
+                <i class="fa-solid fa-magnifying-glass"></i> Sefer Bul
+            </button>
+        </div>
+    </header>
+
+    <section id="results" class="results-section hidden">
+        <h2>Sefer Sonuçları</h2>
+        <div id="results-list"></div>
+    </section>
+    <section id="seat-selection-section" class="hidden" style="padding: 40px 5%; min-height: 60vh;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <button id="backToSearchBtn" class="btn-outline" style="border: none; padding-left: 0;">
+                <i class="fa-solid fa-arrow-left"></i> Geri Dön
+            </button>
+            <h2 style="margin: 0;">Koltuk Seçimi</h2>
+            <div style="width: 80px;"></div> </div>
+
+        <div class="seat-selection-container" style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+            
+            <div class="bus-layout-wrapper" style="background: #252530; padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="driver" style="text-align: right; margin-bottom: 20px; color: #888; border-bottom: 1px solid #444; padding-bottom: 10px;">
+                    <i class="fa-solid fa-steering-wheel" style="font-size: 1.5rem;"></i>
+                </div>
+                
+                <div class="seats-grid" id="mainSeatsGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    </div>
+            </div>
+
+            <div class="ticket-summary" style="background: var(--glass-bg); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 300px; height: fit-content;">
+                <h3 style="color: white; margin-bottom: 20px; text-align: center;">Seçim Özeti</h3>
+                
+                <div style="margin-bottom: 15px; color: var(--text-dim);">
+                    <p>Firma: <strong id="summaryCompany" style="color: white;">-</strong></p>
+                    <p>Fiyat: <strong id="summaryPrice" style="color: white;">-</strong></p>
+                </div>
+
+                <div style="margin-bottom: 25px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <span style="display: block; color: #aaa; font-size: 0.9rem;">Koltuk No:</span>
+                    <strong id="summarySeat" style="font-size: 2rem; color: var(--primary);">--</strong>
+                </div>
+
+                <button id="finishSeatSelection" class="btn-fill" style="width: 100%; font-size: 1.1rem; padding: 15px;">
+                    Onayla ve Bitir
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-number">81+</span>
+            <span class="stat-label">Şehir</span>
+        </div>
+        <div class="stat-separator"></div>
+        <div class="stat-item">
+            <span class="stat-number">450+</span>
+            <span class="stat-label">Firma</span>
+        </div>
+        <div class="stat-separator"></div>
+        <div class="stat-item">
+            <span class="stat-number">1M+</span>
+            <span class="stat-label">Yolcu</span>
+        </div>
+    </div>
+
+    <section class="vision-section scroll-animate">
+        <h2>Yolculuk sadece bir varış noktası değil,<br>
+            <span class="highlight-text">kendi hikayeni yazmaktır.</span>
+        </h2>
+        <p>Konfor, güven ve hız. GoPass ile sınırları aş ve dünyayı keşfet!</p>
+    </section>
+
+    <section class="gallery-section">
+        <div class="gallery-grid">
+            <div class="gallery-card scroll-animate">
+                <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" alt="Travel">
+                <div class="overlay">
+                    <h3>Keşfet</h3>
+                    <p>Bilinmeyene yolculuk</p>
+                </div>
+            </div>
+            <div class="gallery-card tall scroll-animate">
+                <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop" alt="Road">
+                <div class="overlay">
+                    <h3>Özgürlük</h3>
+                    <p>Rüzgarı hisset</p>
+                </div>
+            </div>
+            <div class="gallery-card scroll-animate">
+                <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop" alt="Nature">
+                <div class="overlay">
+                    <h3>Huzur</h3>
+                    <p>Doğayla iç içe</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <section class="feature-split scroll-animate">
+        <div class="feature-text">
+            <h4>NEDEN GOPASS?</h4>
+            <h3>Seyahatin En <br>Modern Hali</h3>
+            <p>Eski bilet alma yöntemlerini unutun. Yapay zeka destekli rota planlayıcı, anlık bildirimler ve %100 güvenli ödeme altyapısı ile geleceğin seyahat deneyimini bugün yaşayın.</p>
+            <a href="#" class="btn-outline" style="margin-top: 20px; display:inline-block;">Daha Fazla Bilgi</a>
+        </div>
+        <div class="feature-image">
+            <img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?q=80&w=2070&auto=format&fit=crop" alt="Feature Travel">
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <i class="fa-solid fa-paper-plane"></i> GoPass
+                </div>
+                <p class="footer-desc">
+                    Seyahatinizi planlamanın en modern yolu. 
+                    Otobüs, uçak ve etkinlik biletleriniz tek bir yerde, güvenle saklanır.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Hızlı Erişim</h4>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="ticket.html">Biletlerim</a></li>
+                    <li><a href="favorites.html">Favoriler</a></li>
+                    <li><a href="#">Kampanyalar</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>İletişim</h4>
+                <ul class="contact-list">
+                    <li>
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Levent, Büyükdere Cd. No:193<br>Şişli / İstanbul</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-phone"></i>
+                        <span>+90 (850) 123 45 67</span>
+                    </li>
+                    <li>
+                        <i class="fa-regular fa-envelope"></i>
+                        <span>destek@gopass.com</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Bizi Takip Edin</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 GoPass Teknoloji A.Ş. Tüm Hakları Saklıdır.</p>
+            <div class="footer-legal">
+                <a href="#">Gizlilik Politikası</a>
+                <a href="#">Kullanım Koşulları</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/home.js"></script>
+    <script src="../js/main.js"></script>
+
+</body>
+</html>
