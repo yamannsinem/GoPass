@@ -5,15 +5,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const resultsSection = document.getElementById("results");
     const seatSection = document.getElementById("seat-selection-section");
     
-    // Varsa diğer bölümleri de seçelim (Hata vermemesi için kontrol edeceğiz)
     const newStatsBar = document.querySelector(".stats-bar");
     const visionSection = document.querySelector(".vision-section");
     const gallerySection = document.querySelector(".gallery-section");
     const featureSection = document.querySelector(".feature-split");
     
-    // --- 1. ARAMA İŞLEMİ ---
+    // --- TARİH AYARI ---
+    const dateInput = document.getElementById("date");
+    if (dateInput) {
+        const today = new Date().toISOString().split("T")[0];
+        dateInput.min = today;
+    }
+
+    // --- 1. ARAMA İŞLEMİ VE FAVORİLER (GÜNCELLENDİ: ROTA BAZLI) ---
     const searchBtn = document.getElementById("searchBtn");
     const resultsList = document.getElementById("results-list");
+
+    // Rota Favorileme Fonksiyonu
+    window.toggleFavorite = function(btn, from, to) {
+        // Görünüm güncelle
+        btn.classList.toggle("active");
+        
+        const icon = btn.querySelector("i");
+        if (btn.classList.contains("active")) {
+            icon.classList.remove("fa-regular");
+            icon.classList.add("fa-solid");
+        } else {
+            icon.classList.remove("fa-solid");
+            icon.classList.add("fa-regular");
+        }
+
+        // LocalStorage İşlemleri
+        let favs = JSON.parse(localStorage.getItem("favoriteRoutes") || "[]");
+        
+        // Bu rota zaten var mı?
+        const existsIndex = favs.findIndex(f => f.from === from && f.to === to);
+
+        if (existsIndex > -1) {
+            // Varsa sil
+            favs.splice(existsIndex, 1);
+        } else {
+            // Yoksa ekle (Sadece Rota Bilgisi)
+            favs.push({ from: from, to: to });
+        }
+        
+        localStorage.setItem("favoriteRoutes", JSON.stringify(favs));
+    };
 
     if (searchBtn) {
         const mockTrips = [
@@ -24,12 +61,31 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
 
         searchBtn.addEventListener("click", () => {
+            if(dateInput && !dateInput.value) {
+                alert("Lütfen bir yolculuk tarihi seçiniz.");
+                return;
+            }
             renderResults(mockTrips);
         });
 
         function renderResults(trips) {
             resultsList.innerHTML = "";
+            
+            // Arama kutularındaki değerleri al (Varsayılan değerlerle)
+            const originVal = document.getElementById("origin").value || "İstanbul";
+            const destVal = document.getElementById("destination").value || "Ankara";
+
+            // Mevcut favori rotaları çek
+            let favs = JSON.parse(localStorage.getItem("favoriteRoutes") || "[]");
+            
+            // Şu an aranan rota favorilerde var mı?
+            const isRouteFav = favs.some(f => f.from === originVal && f.to === destVal);
+
             trips.forEach(t => {
+                // Eğer rota favoriyse tüm kartlardaki kalp dolu olsun
+                const activeClass = isRouteFav ? "active" : "";
+                const iconClass = isRouteFav ? "fa-solid" : "fa-regular";
+
                 const card = document.createElement("div");
                 card.classList.add("ticket-card");
                 card.innerHTML = `
@@ -37,12 +93,19 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="company-name">${t.company}</div>
                         <div class="time-info">
                             <i class="fa-regular fa-clock"></i> ${t.time} 
-                            <span style="margin-left:10px; color:#aaa;">${t.route}</span>
+                            <span style="margin-left:10px; color:#aaa;">${originVal} > ${destVal}</span>
                         </div>
                     </div>
-                    <div class="ticket-action">
-                        <div class="price">${t.price} ₺</div>
-                        <button class="btn-buy" onclick="goToSeatSelection('${t.company}', ${t.price})">
+                    
+                    <div class="ticket-action" style="display:flex; align-items:center;">
+                        
+                        <button class="btn-fav ${activeClass}" onclick="toggleFavorite(this, '${originVal}', '${destVal}')" title="Bu Rotayı Favorilere Ekle">
+                            <i class="${iconClass} fa-heart"></i>
+                        </button>
+
+                        <div class="price" style="margin-right:15px;">${t.price} ₺</div>
+                        
+                        <button class="btn-buy" onclick="goToSeatSelection('${t.company}', ${t.price}, '${t.time}')">
                             Koltuk Seç <i class="fa-solid fa-chevron-right"></i>
                         </button>
                     </div>
@@ -54,12 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- 2. KOLTUK SEÇİM EKRANINA GEÇİŞ (BURASI KRİTİK) ---
+    // --- 2. KOLTUK SEÇİM EKRANINA GEÇİŞ ---
     let selectedSeatNum = null;
+    let currentTripTime = "14:00";
 
-    // Fonksiyonu window'a atadık ki HTML'den erişilebilsin
-    window.goToSeatSelection = function(company, price) {
-        // 1. Sayfadaki diğer her şeyi GİZLE
+    window.goToSeatSelection = function(company, price, time) {
+        if(time) currentTripTime = time;
+
         heroSection.classList.add("hidden");
         resultsSection.classList.add("hidden");
         if(newStatsBar) newStatsBar.classList.add("hidden");
@@ -67,66 +131,45 @@ document.addEventListener("DOMContentLoaded", () => {
         if(gallerySection) gallerySection.classList.add("hidden");
         if(featureSection) featureSection.classList.add("hidden");
 
-        // 2. Koltuk Seçim Ekranını AÇ
         seatSection.classList.remove("hidden");
         
-        // Bilgileri Güncelle
         document.getElementById("summaryCompany").innerText = company;
         document.getElementById("summaryPrice").innerText = price + " ₺";
         document.getElementById("summarySeat").innerText = "--";
         selectedSeatNum = null;
 
-        // 3. Koltukları Oluştur
         const grid = document.getElementById("mainSeatsGrid");
-        grid.innerHTML = ""; // Temizle
+        grid.innerHTML = "";
         
         for(let i=1; i<=40; i++) {
             const seat = document.createElement("div");
-            
-            // CSS sınıflarını ekle (seat sınıfı CSS'te tanımlı olmalı!)
             seat.classList.add("seat");
             seat.innerText = i;
-            
-            // Stil Ayarları (JS ile zorla stil veriyoruz ki CSS hatası varsa bile çalışsın)
             seat.style.display = "flex";
             seat.style.justifyContent = "center";
             seat.style.alignItems = "center";
-            seat.style.cursor = "pointer"; // Tıklanabilir el işareti çıksın
+            seat.style.cursor = "pointer";
             
-            // Rastgele Doluluk
-            if(Math.random() < 0.3) {
-                seat.classList.add("occupied");
-            }
+            if(Math.random() < 0.3) seat.classList.add("occupied");
 
-            // --- TIKLAMA OLAYI (EVENT LISTENER) ---
             seat.addEventListener("click", function() {
-                // Eğer doluysa (occupied) işlem yapma
                 if(this.classList.contains("occupied")) {
                     alert("Bu koltuk dolu!");
                     return;
                 }
-
-                // Önceki seçimi kaldır
                 const previouslySelected = grid.querySelector(".seat.selected");
-                if (previouslySelected) {
-                    previouslySelected.classList.remove("selected");
-                }
+                if (previouslySelected) previouslySelected.classList.remove("selected");
                 
-                // Yeni seçimi yap
                 this.classList.add("selected");
                 selectedSeatNum = i;
-                
-                // Özeti güncelle
                 document.getElementById("summarySeat").innerText = i;
             });
-
             grid.appendChild(seat);
         }
-
         window.scrollTo(0, 0);
     };
 
-    // --- 3. GERİ DÖN BUTONU ---
+    // --- GERİ DÖN ---
     const backBtn = document.getElementById("backToSearchBtn");
     if(backBtn) {
         backBtn.addEventListener("click", () => {
@@ -140,20 +183,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 4. ONAYLA VE BİTİR ---
+    // --- ONAYLA VE ÖDEMEYE GİT ---
     const finishBtn = document.getElementById("finishSeatSelection");
     if(finishBtn) {
         finishBtn.addEventListener("click", () => {
-            if(!selectedSeatNum) {
-                alert("Lütfen bir koltuk seçiniz!");
+            if(!selectedSeatNum) return alert("Lütfen bir koltuk seçiniz!");
+
+            const isLogged = localStorage.getItem("isLoggedIn");
+            if(isLogged !== "true") {
+                alert("Bilet alabilmek için lütfen önce giriş yapınız.");
+                window.location.href = "giris.html";
                 return;
             }
-            alert(`✅ İşlem Tamam!\n${selectedSeatNum} numaralı koltuk alındı.`);
-            location.reload(); 
+            
+            const company = document.getElementById("summaryCompany").innerText;
+            const price = document.getElementById("summaryPrice").innerText;
+            const date = document.getElementById("date").value || new Date().toISOString().split("T")[0];
+            
+            const pendingTicket = {
+                company: company,
+                from: document.getElementById("origin").value || "İstanbul",
+                to: document.getElementById("destination").value || "Ankara",
+                date: date,
+                time: currentTripTime,
+                price: price,
+                seat: selectedSeatNum
+            };
+
+            localStorage.setItem("pendingTicket", JSON.stringify(pendingTicket));
+            window.location.href = "odeme.html"; 
         });
     }
     
-    // --- 5. SEKME GEÇİŞLERİ (Tabs) ---
+    // Tablar
     const tabs = document.querySelectorAll(".tab-btn");
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
