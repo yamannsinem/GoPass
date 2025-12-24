@@ -35,6 +35,109 @@
 
 <script src="../js/favorites.js"></script>
 <script src="../js/main.js"></script>
+<div class="chat-window" id="liveChatWindow">
+        <div class="chat-header">
+            <div>
+                <h4>GoPass Asistan</h4>
+                <p>● Çevrimiçi</p>
+            </div>
+            <i class="fa-solid fa-xmark close-chat" onclick="toggleLiveChat()"></i>
+        </div>
+        
+        <div class="chat-body" id="chatBody">
+            <div class="message bot">
+                Merhaba! 👋 Ben GoPass Yapay Zeka Asistanı. Size nasıl yardımcı olabilirim?
+            </div>
+            <div class="message bot">
+                Bilet iptali, sefer saatleri veya kampanyalar hakkında soru sorabilirsiniz.
+            </div>
+        </div>
+        
+        <form class="chat-footer" id="chatForm">
+            <input type="text" id="chatInput" placeholder="Mesajınızı yazın..." autocomplete="off">
+            <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
 
+    <div class="support-widget">
+        
+        <div class="support-menu">
+            <h4 style="color: white; margin-bottom: 15px; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                Size nasıl yardımcı olabiliriz?
+            </h4>
+            
+            <a href="https://wa.me/908501234567" target="_blank" class="support-link">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>WhatsApp Destek</span>
+            </a>
+            
+            <a href="#" onclick="toggleLiveChat(); return false;" class="support-link">
+                <i class="fa-solid fa-headset"></i>
+                <span>Canlı Asistan</span>
+            </a>
+            
+            <a href="hakkimizda.html" class="support-link">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Sıkça Sorulanlar</span>
+            </a>
+        </div>
+
+        <div class="support-btn">
+            <i class="fa-regular fa-comments"></i>
+        </div>
+    </div>
+
+    <script>
+        // Sohbet Penceresini Aç/Kapat
+        function toggleLiveChat() {
+            const chatWindow = document.getElementById("liveChatWindow");
+            chatWindow.classList.toggle("active");
+            
+            // Açılınca input'a odaklansın
+            if(chatWindow.classList.contains("active")) {
+                setTimeout(() => document.getElementById("chatInput").focus(), 300);
+            }
+        }
+
+        // Basit Mesajlaşma Simülasyonu
+        document.getElementById("chatForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const input = document.getElementById("chatInput");
+            const message = input.value.trim();
+            const chatBody = document.getElementById("chatBody");
+
+            if(!message) return;
+
+            // 1. Kullanıcı Mesajını Ekle
+            const userMsg = document.createElement("div");
+            userMsg.classList.add("message", "user");
+            userMsg.innerText = message;
+            chatBody.appendChild(userMsg);
+            
+            // Inputu temizle ve aşağı kaydır
+            input.value = "";
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // 2. Bot Cevabı (Simülasyon - 1 saniye sonra)
+            setTimeout(() => {
+                const botMsg = document.createElement("div");
+                botMsg.classList.add("message", "bot");
+                
+                // Basit cevap mantığı
+                if(message.toLowerCase().includes("iptal")) {
+                    botMsg.innerText = "Bilet iptal işlemleri için 'Biletlerim' sayfasına gidip ilgili biletin yanındaki 'İptal Et' butonunu kullanabilirsiniz.";
+                } else if(message.toLowerCase().includes("merhaba")) {
+                    botMsg.innerText = "Selamlar! Size harika bir yolculuk planlayalım mı?";
+                } else if(message.toLowerCase().includes("fiyat")) {
+                    botMsg.innerText = "Fiyatlarımız dinamik olarak değişmektedir. Ana sayfadan arama yaparak en güncel fiyatları görebilirsiniz.";
+                } else {
+                    botMsg.innerText = "Şu an tüm temsilcilerimiz meşgul, ancak sizi not ettim. En kısa sürede döneceğiz.";
+                }
+
+                chatBody.appendChild(botMsg);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
